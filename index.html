@@ -32,13 +32,18 @@
             font-size: 2.5rem;
             margin-bottom: -50px;
         }
-        .container p {
+        .container .result {
             font-size: 1.2rem;
-            color: #ef0303;
+            color: #ffbb00;
+            margin: 10px 0;
+        }
+        .next-anniversary {
+            font-size: 0.8rem;
+            color: #85ffa7;
             margin: 10px 0;
         }
         .container .anniversary {
-            color: #d10000;
+            color: #e60000;
             font-weight: bold;
             font-size: 1.5rem;
         }
@@ -147,14 +152,14 @@
                 <div class="oil">ออย</div>
             </div>
         </div>
-        <p id="result"></p>
+        <p class="result" id="result"></p>
+        <p class="next-anniversary" id="next-anniversary"></p>
         <div class="footer">
             ❤️ <span>เราจะอยู่ด้วยกันตลอดไป</span> ❤️
         </div>
     </div>
 
     <script>
-        // กำหนดวันเริ่มคบกัน (รูปแบบ YYYY-MM-DD)
         const startDate = "2024-11-17";
 
         function startCounting() {
@@ -170,33 +175,53 @@
                 const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
                 const seconds = Math.floor((timeDifference / 1000) % 60);
 
-                const isAnniversary = thailandTime.getDate() === 17;
-
-                if (isAnniversary) {
-                    document.getElementById('result').innerHTML = 
-                        `<span class="anniversary">วันนี้เป็นวันที่ 17 ของเดือน! 🎉</span><br>เราอยู่ด้วยกันมาแล้ว ${days} วัน ${hours} ชั่วโมง ${minutes} นาที ${seconds} วินาที!`;
-                } else {
-                    document.getElementById('result').innerText = 
-                        `เราคบกันมาแล้ว ${days} วัน ${hours} ชั่วโมง ${minutes} นาที ${seconds} วินาที!`;
-                }
+                document.getElementById('result').innerText = 
+                    `เราคบกันมาแล้ว ${days} วัน ${hours} ชั่วโมง ${minutes} นาที ${seconds} วินาที!`;
             }, 1000);
         }
 
-        // ฟังก์ชันสำหรับสร้างหลายๆ ไอคอน 💖 ที่กระจายไปคนละทาง
+        function getNextAnniversary() {
+    const now = new Date();
+    let nextAnniversary = new Date(now.getFullYear(), now.getMonth(), 10); // เดือน 11 (พฤศจิกายน) ใช้ค่า 10 เพราะนับจาก 0
+
+    if (now > nextAnniversary) {
+        nextAnniversary.setMonth(nextAnniversary.getMonth() + 0);
+    }
+
+    const isTodayAnniversary = now.toDateString() === nextAnniversary.toDateString();
+
+    if (isTodayAnniversary) {
+        document.getElementById('next-anniversary').innerHTML = `วันนี้เป็นวันคบรอบของเรา! 🎉 อยู่ด้วยกันมา ${Math.floor((now - new Date(startDate)) / (1000 * 60 * 60 * 24))} วันแล้ว!`;
+    } else {
+        const timeDifference = nextAnniversary - now;
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+        const seconds = Math.floor((timeDifference / 1000) % 60);
+
+        document.getElementById('next-anniversary').innerText = `วันคบรอบของ(ออย🤍พลอย)อีก ${days} วัน ${hours} ชั่วโมง ${minutes} นาที ${seconds} วินาที`;
+    }
+}
+
+
+        function updateNextAnniversary() {
+            getNextAnniversary();
+        }
+
+        setInterval(updateNextAnniversary, 1000);
+
         document.querySelector('body').addEventListener('click', function(event) {
-            const numberOfHearts = 20; // จำนวนไอคอนที่ต้องการให้กระจาย
+            const numberOfHearts = 20;
             for (let i = 0; i < numberOfHearts; i++) {
                 const heart = document.createElement('div');
                 heart.classList.add('heart-effect');
                 heart.innerText = '💖';
 
-                // สุ่มทิศทางการเคลื่อนที่
-                const angle = Math.random() * 360; // ทิศทางสุ่ม (องศา)
-                const distance = Math.random() * 200 + 100; // ระยะทางสุ่ม
+                const angle = Math.random() * 360;
+                const distance = Math.random() * 200 + 100;
                 const x = distance * Math.cos(angle);
                 const y = distance * Math.sin(angle);
 
-                // ตั้งค่า --x และ --y สำหรับแอนิเมชัน
                 heart.style.setProperty('--x', `${x}px`);
                 heart.style.setProperty('--y', `${y}px`);
 
@@ -204,14 +229,12 @@
                 heart.style.top = `${event.clientY - 10 + (Math.random() * 50 - 25)}px`;
                 document.body.appendChild(heart);
 
-                // ลบไอคอนหลังจากแอนิเมชันเสร็จ
                 setTimeout(() => {
                     heart.remove();
                 }, 1000);
             }
         });
 
-        // เรียกใช้ฟังก์ชันเริ่มต้นการนับเมื่อโหลดหน้าเว็บ
         startCounting();
     </script>
 </body>
