@@ -185,7 +185,7 @@
     let nextAnniversary = new Date(now.getFullYear(), now.getMonth(), 17); // เดือน 11 (พฤศจิกายน) ใช้ค่า 10 เพราะนับจาก 0
 
     if (now > nextAnniversary) {
-        nextAnniversary.setMonth(nextAnniversary.getMonth() + 0);
+        nextAnniversary.setMonth(nextAnniversary.getMonth() + 1);
     }
 
     const isTodayAnniversary = now.toDateString() === nextAnniversary.toDateString();
